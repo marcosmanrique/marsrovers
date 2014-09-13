@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import br.com.manrique.marsrovers.entity.Robot;
 import br.com.manrique.marsrovers.form.RobotForm;
@@ -39,12 +40,14 @@ public class RobotController {
 	 * @return
 	 */
 	@RequestMapping(value = "/execute", method = RequestMethod.POST)
-	public String execute(RobotForm robotForm) {
-		String instructions = robotForm.getInstructions();
+	public String execute(ModelMap model, RobotForm robotForm) {
 		try {
-			robotForm.setResult(execute(instructions));
+			String result = execute(robotForm.getInstructions());
+			model.remove("error");
+			model.addAttribute("result", result);
 		} catch (Exception e) {
-			robotForm.setResult("Invalid instructions!");
+			model.remove("result");
+			model.addAttribute("error", "Invalid instructions!"); 
 		}
 		return "index";
 	}
@@ -60,7 +63,7 @@ public class RobotController {
 		String initialPosition = rows[1];
 		String instruction = rows[2];
 		Robot robot = startRobot(initialPosition);
-		executeInstruction(instruction, robot);
+		executeInstruction(instruction.trim(), robot);
 		return robot.getCurrentPosition();
 	}
 	

@@ -18,8 +18,10 @@ public class DirectionUtil {
 			return Directions.NORTH;
 		case 'W':
 			return Directions.WEST;
-		default:
+		case 'E':
 			return Directions.EAST;
+		default:
+			return null;
 		}
 	}
 
